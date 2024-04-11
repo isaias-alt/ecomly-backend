@@ -24,10 +24,8 @@ const sendMail = async (email, subject, body) => {
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error(`Error sending email: ${email}`);
         reject(Error('Error sending email.'));
       }
-      console.log(`Email sent: ${info.response}`);
       resolve('Password reset OPT sent to your email');
     });
   });

@@ -36,7 +36,6 @@ const register = async (req, res) => {
     return res.status(201).json(user);
 
   } catch (error) {
-    console.error(error);
     if (error.message.includes('email_1 dup key')) {
       return res.status(409).json({
         type: 'AuthError',
@@ -87,7 +86,6 @@ const login = async (req, res) => {
     return res.json({ ...user._doc, accessToken });
 
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       type: error.name,
       message: error.message,
@@ -115,7 +113,6 @@ const verifyToken = async (req, res) => {
     return res.json(true);
 
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       type: error.name,
       message: error.message,
@@ -147,7 +144,6 @@ const forgotPassword = async (req, res) => {
     return res.json({ message: response });
 
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       type: error.name,
       message: error.message,
@@ -189,7 +185,6 @@ const verifyPasswordResetOTP = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       type: error.name,
       message: error.message,
@@ -236,7 +231,6 @@ const resetPassword = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       type: error.name,
       message: error.message,
