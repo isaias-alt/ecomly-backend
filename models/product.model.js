@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose');
-const { preSaveHook } = require('../hooks/product.hook');
 
 const productSchema = Schema({
   name: { type: String, required: true },
