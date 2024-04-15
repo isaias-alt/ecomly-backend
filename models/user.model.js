@@ -26,4 +26,7 @@ const userSchema = Schema({
 
 userSchema.index({ email: 1 }, { unique: true });
 
+userSchema.set('toObject', { virtuals: true });
+userSchema.set('toJSON', { virtuals: true });
+
 exports.User = model('User', userSchema);

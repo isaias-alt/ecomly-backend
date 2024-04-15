@@ -7,4 +7,7 @@ const categorySchema = Schema({
   markedForDeletion: { type: Boolean, default: false }
 });
 
+categorySchema.set('toObject', { virtuals: true });
+categorySchema.set('toJSON', { virtuals: true });
+
 exports.Category = model('Category', categorySchema);

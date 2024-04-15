@@ -43,4 +43,7 @@ const orderSchema = Schema({
   dateOrdered: { type: Date, default: Date.now }
 });
 
+orderSchema.set('toObject', { virtuals: true });
+orderSchema.set('toJSON', { virtuals: true });
+
 exports.Order = model('Order', orderSchema);
