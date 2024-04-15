@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const { preSaveHook } = require('../hooks/product.hook');
 
 const productSchema = Schema({
   name: { type: String, required: true },
@@ -25,6 +26,22 @@ const productSchema = Schema({
   dateAdded: { type: Date, default: Date.now }
 });
 
-// TODO: pre-save hook
+productSchema.pre('Save', async (next) => {
+  if (this.reviews.length > 0) {
+    await this.populete('reviews');
+
+    const totalRating = this.reviews.reduce((acc, review) => acc + review.rating, 0);
+
+    this.rating = totalRating / this.reviews.length;
+    this.rating = parseFloat((totalRating / this.reviews.length).toFixed(1));
+    this.numberOfReviews = this.review.length;
+  }
+  next();
+});
+
+productSchema.index({ name: 'text', description: 'text' });
+
+productSchema.set('toObject', { virtuals: true });
+productSchema.set('toJSON', { virtuals: true });
 
 exports.Product = model('Product', productSchema);
