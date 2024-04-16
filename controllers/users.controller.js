@@ -3,6 +3,7 @@ const { User } = require("../models/user.model");
 const getUsers = async (_, res) => {
   try {
     const users = await User.find().select('name email id isAdmin');
+
     if (!users) {
       return res.status(404).json({
         message: 'Users not found',
@@ -22,13 +23,17 @@ const getUsers = async (_, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-passwordHash -resetPasswordOtp -resetPasswordOtpExpired');
+    const user = await User.findById(req.params.id).select(
+      '-passwordHash -resetPasswordOtp -resetPasswordOtpExpired -cart'
+    );
+
     if (!user) {
       return res.status(404).json({
         message: 'User not found',
         code: 404
       });
     }
+
     return res.json(user);
 
   } catch (error) {
@@ -43,6 +48,7 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { name, email, phone } = req.body;
+
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { name, email, phone },
@@ -57,6 +63,8 @@ const updateUser = async (req, res) => {
     }
 
     user.passwordHash = undefined;
+    user.cart = undefined;
+
     return res.json(user);
 
   } catch (error) {
