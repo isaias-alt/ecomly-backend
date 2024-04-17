@@ -57,6 +57,8 @@ const deleteUser = async (req, res) => {
 
     await Token.deleteOne({ userId: userId });
 
+    await User.deleteOne({ _id: userId });
+
     return res.status(204).end();
 
   } catch (error) {
