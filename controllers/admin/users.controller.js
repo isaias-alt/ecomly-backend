@@ -1,8 +1,8 @@
-const { User } = require('../models/user.model');
-const { Order } = require('../models/order.model');
-const { Token } = require('../models/token.model');
-const { OrderItem } = require('../models/order_item.model');
-const { CartProduct } = require('../models/cart_product.model');
+const { User } = require('../../models/user.model');
+const { Order } = require('../../models/order.model');
+const { Token } = require('../../models/token.model');
+const { OrderItem } = require('../../models/order_item.model');
+const { CartProduct } = require('../../models/cart_product.model');
 
 // USER
 const getUsersCount = async (_, res) => {
