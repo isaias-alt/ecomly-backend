@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const adminController = require('../controllers/admin.controller');
+const { adminController } = require('../controllers/admin.controller');
 
 //  USER
 router.get('/users/count', adminController.getUsersCount);
