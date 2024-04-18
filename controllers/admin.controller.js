@@ -1,15 +1,15 @@
 const userController = require('./admin/users.controller');
 const orderController = require('./admin/orders.controller');
 const productsController = require('./admin/products.controller');
-const categoryController = require('./admin/category.controller');
+const categoriesController = require('./admin/categories.controller');
 
 const adminController = {
   getUsersCount: userController.getUsersCount,
   deleteUser: userController.deleteUser,
 
-  addCategory: categoryController.addCategory,
-  editCategory: categoryController.editCategory,
-  deleteCategory: categoryController.deleteCategory,
+  addCategory: categoriesController.addCategory,
+  editCategory: categoriesController.editCategory,
+  deleteCategory: categoriesController.deleteCategory,
 
   getProductsCount: productsController.getProductsCount,
   addProduct: productsController.addProduct,
