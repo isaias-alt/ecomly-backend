@@ -53,7 +53,33 @@ const addCategory = async (req, res) => {
   }
 }
 
-const editCategory = async (req, res) => { }
+const editCategory = async (req, res) => {
+  try {
+
+    const { name, icon, colour } = req.body;
+    const category = await Category.findByIdAndUpdate(
+      req.params.id,
+      { name, icon, colour },
+      { new: true },
+    );
+
+    if (!category) {
+      return res.status(404).json({
+        message: 'Category not found!',
+        code: 404
+      })
+    }
+
+    return res.json(category);
+
+  } catch (error) {
+    return res.status(500).json({
+      type: error.name,
+      message: error.message,
+      code: 500
+    });
+  }
+}
 
 const deleteCategory = async (req, res) => {
   try {
