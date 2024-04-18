@@ -24,6 +24,7 @@ app.use(errorHandler);
 app.use(authRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
+app.use('/public', express.static(__dirname + '/public'));
 
 mongoose.connect(mongodbConectionString).then(() => {
   console.log('Connected to Database');
