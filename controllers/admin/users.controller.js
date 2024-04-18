@@ -4,7 +4,6 @@ const { Token } = require('../../models/token.model');
 const { OrderItem } = require('../../models/order_item.model');
 const { CartProduct } = require('../../models/cart_product.model');
 
-// USER
 const getUsersCount = async (_, res) => {
   try {
     const userCount = User.countDocuments();
