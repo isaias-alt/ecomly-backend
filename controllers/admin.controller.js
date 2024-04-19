@@ -4,20 +4,21 @@ const productsController = require('./admin/products.controller');
 const categoriesController = require('./admin/categories.controller');
 
 const adminController = {
-  getUsersCount: userController.getUsersCount,
   deleteUser: userController.deleteUser,
+  getUsersCount: userController.getUsersCount,
 
   addCategory: categoriesController.addCategory,
   editCategory: categoriesController.editCategory,
   deleteCategory: categoriesController.deleteCategory,
 
-  getProductsCount: productsController.getProductsCount,
   addProduct: productsController.addProduct,
   editProduct: productsController.editProduct,
-  deleteProductImages: productsController.deleteProduct,
   deleteProduct: productsController.deleteProduct,
+  getProductsCount: productsController.getProductsCount,
+  deleteProductImages: productsController.deleteProduct,
 
   getOrders: orderController.getOrders,
+  deleteOrder: orderController.deleteOrder,
   getOrdersCount: orderController.getOrdersCount,
   changeOrderStatus: orderController.changeOrderStatus,
 
