@@ -1,8 +1,23 @@
+const { populate } = require('dotenv');
 const { Order } = require('../../models/order.model');
 
 const getOrders = async (_, res) => {
   try {
-    const orders = await Order.find().select('-statusHistory').sort({ dateOrdered: -1 });
+    const orders = await Order.find()
+      .select('-statusHistory')
+      .populate('user', 'name email')
+      .sort({ dateOrdered: -1 })
+      .populate({
+        path: 'orderItems',
+        populate: {
+          path: 'product',
+          select: 'name',
+          populate: {
+            path: 'category',
+            select: 'name',
+          },
+        },
+      });
 
     if (!orders) {
       return res.status(404).json({
