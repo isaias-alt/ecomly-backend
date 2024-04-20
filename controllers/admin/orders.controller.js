@@ -31,8 +31,7 @@ const getOrders = async (_, res) => {
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: `${error.message}{${error.fields}}`,
-      storageErrors: error.storageErrors,
+      message: error.message,
       code: 500
     });
   }
@@ -87,8 +86,7 @@ const changeOrderStatus = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: `${error.message}{${error.fields}}`,
-      storageErrors: error.storageErrors,
+      message: error.message,
       code: 500
     });
   }
@@ -113,8 +111,7 @@ const deleteOrder = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: `${error.message}{${error.fields}}`,
-      storageErrors: error.storageErrors,
+      message: error.message,
       code: 500
     });
   }
