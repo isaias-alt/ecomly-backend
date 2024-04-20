@@ -14,6 +14,7 @@ router.delete('/categories/:id', adminController.deleteCategory);
 
 //  PRODUCTS
 router.get('/products/count', adminController.getProductsCount);
+router.get('/products/', adminController.getProducts);
 router.post('/products', adminController.addProduct);
 router.post('/products/:id', adminController.editProduct);
 router.delete('/products/:id/images', adminController.deleteProductImages);

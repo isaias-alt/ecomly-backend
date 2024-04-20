@@ -12,6 +12,7 @@ const adminController = {
   deleteCategory: categoriesController.deleteCategory,
 
   addProduct: productsController.addProduct,
+  getProducts: productsController.getProducts,
   editProduct: productsController.editProduct,
   deleteProduct: productsController.deleteProduct,
   getProductsCount: productsController.getProductsCount,
