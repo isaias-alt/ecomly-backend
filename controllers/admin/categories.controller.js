@@ -1,4 +1,5 @@
 const util = require('util');
+const multer = require('multer');
 
 const mediaHelper = require('../../helpers/media.helper');
 const { Category } = require('../../models/category.model');
@@ -45,6 +46,12 @@ const addCategory = async (req, res) => {
     return res.status(201).json({ category });
 
   } catch (error) {
+    if (error instanceof multer.MulterError) {
+      return res.status(error.code).json({
+        message: error.message,
+        code: error.code
+      });
+    }
     return res.status(500).json({
       type: error.name,
       message: error.message,
