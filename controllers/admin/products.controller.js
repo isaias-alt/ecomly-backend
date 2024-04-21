@@ -1,10 +1,10 @@
 const multer = require('multer');
+const { default: mongoose } = require('mongoose');
 
 const mediaHelper = require('../../helpers/media.helper');
 const { Product } = require('../../models/product.model');
 const { Category } = require('../../models/category.model');
 const { Review } = require('../../models/review.model');
-const { default: mongoose } = require('mongoose');
 
 const getProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
