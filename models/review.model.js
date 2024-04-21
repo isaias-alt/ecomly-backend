@@ -8,7 +8,7 @@ const reviewSchema = Schema({
   date: { type: Date, default: Date.now }
 });
 
-cartProductoSchema.set('toObject', { virtuals: true });
-cartProductoSchema.set('toJSON', { virtuals: true });
+reviewSchema.set('toObject', { virtuals: true });
+reviewSchema.set('toJSON', { virtuals: true });
 
 exports.Review = model('Review', reviewSchema);

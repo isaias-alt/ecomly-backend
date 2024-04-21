@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const { Token } = require('../models/token.model');
 const { User } = require('../models/user.model');
 const { config } = require('../config/config');
-const mailSender = require('../helpers/email_sender.helper');
+const mailSender = require('../helpers/emailSender.helper');
 const { accessTokenSecret, refreshTokenSecret } = config;
 
 const register = async (req, res) => {
