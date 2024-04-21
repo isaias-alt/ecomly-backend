@@ -39,7 +39,7 @@ const getOrders = async (_, res) => {
 
 const getOrdersCount = async (_, res) => {
   try {
-    const ordersCount = Order.countDocument();
+    const ordersCount = Order.countDocuments();
 
     if (!ordersCount) {
       return res.status(500).json({
