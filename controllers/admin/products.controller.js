@@ -13,25 +13,24 @@ const getProducts = async (req, res) => {
 
   try {
     const products = await Product.find()
-      .sort({ dateAdded: -1 })
       .skip(skipIndex)
       .limit(limit)
       .populate('category', 'name')
       .select('-reviews')
       .exec();
 
-    const count = await Product.countDocuments();
+    const productsCount = await Product.countDocuments();
 
-    const totalPages = Math.ceil(count / limit);
+    const totalPages = Math.ceil(productsCount / limit);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: {
         products,
         pageInfo: {
           currentPage: page,
           totalPages,
-          totalProducts: count,
+          totalProducts: productsCount,
         },
       },
     });
