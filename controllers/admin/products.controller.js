@@ -3,6 +3,7 @@ const multer = require('multer');
 const mediaHelper = require('../../helpers/media.helper');
 const { Product } = require('../../models/product.model');
 const { Category } = require('../../models/category.model');
+const { Review } = require('../../models/review.model');
 const { default: mongoose } = require('mongoose');
 
 const getProducts = async (req, res) => { }
@@ -238,6 +239,14 @@ const editProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
+
+    if (!mongoose.isValidObjectId(productId)) {
+      return res.status(404).json({
+        message: 'Invalid product',
+        code: 404
+      });
+    }
+
     const product = await Product.findById(productId);
 
     if (!product) {
@@ -247,7 +256,11 @@ const deleteProduct = async (req, res) => {
       });
     }
 
-    await Product.deleteOne({ _id: productId });
+    await mediaHelper.deleteImages([...product.images, ...product.image], 'ENOENT');
+
+    await Review.deleteMany({ _id: { $in: product.reviews } });
+
+    await Product.findByIdAndDelete(productId);
 
     return res.status(204).end();
 
@@ -260,6 +273,46 @@ const deleteProduct = async (req, res) => {
   }
 }
 
-const deleteProductImages = async (req, res) => { }
+const deleteProductImages = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { deletedImageUrls } = req.body;
+
+    if (!mongoose.isValidObjectId(productId) || !Array.isArray(deletedImageUrls)) {
+      return res.status(400).json({
+        message: 'Invalid request data',
+        code: 400
+      });
+    }
+
+    await mediaHelper.deleteImages(deletedImageUrls);
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found!',
+        code: 404
+      });
+    }
+
+    product.images.filter((image) => !deletedImageUrls.includes(image));
+    await product.save();
+
+    return res.status(204).end();
+
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({
+        message: 'Image not found',
+        code: 404
+      });
+    }
+    return res.status(500).json({
+      type: error.name,
+      message: error.message,
+      code: 500
+    });
+  }
+}
 
 module.exports = { getProductsCount, addProduct, editProduct, deleteProduct, deleteProductImages, getProducts };
