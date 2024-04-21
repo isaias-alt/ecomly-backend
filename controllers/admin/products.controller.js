@@ -6,7 +6,43 @@ const { Category } = require('../../models/category.model');
 const { Review } = require('../../models/review.model');
 const { default: mongoose } = require('mongoose');
 
-const getProducts = async (req, res) => { }
+const getProducts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skipIndex = (page - 1) * limit;
+
+  try {
+    const products = await Product.find()
+      .sort({ dateAdded: -1 })
+      .skip(skipIndex)
+      .limit(limit)
+      .populate('category', 'name')
+      .select('-reviews')
+      .exec();
+
+    const count = await Product.countDocuments();
+
+    const totalPages = Math.ceil(count / limit);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        products,
+        pageInfo: {
+          currentPage: page,
+          totalPages,
+          totalProducts: count,
+        },
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      type: error.name,
+      message: error.message,
+      code: 500
+    });
+  }
+}
 
 const getProductsCount = async (_, res) => {
   try {
