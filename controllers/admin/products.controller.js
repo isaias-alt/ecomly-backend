@@ -10,7 +10,7 @@ const getProducts = async (req, res) => { }
 
 const getProductsCount = async (_, res) => {
   try {
-    const productsCount = Product.countDocument();
+    const productsCount = Product.countDocuments();
 
     if (!productsCount) {
       return res.status(500).json({
@@ -165,7 +165,7 @@ const editProduct = async (req, res) => {
         const updateGallery = imagesFiles && imagesFiles > 0;
         if (updateGallery) {
           const imagePaths = [];
-          for (const image of gallery) {
+          for (const image of imagesFiles) {
             const imagePath = `${req.protocol}://${req.get('host')}/${image.path}`;
             imagePaths.push(imagePath);
           }
