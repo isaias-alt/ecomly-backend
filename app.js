@@ -5,9 +5,6 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 
 const { config } = require('./config/config');
-const authRouter = require('./routes/auth.router');
-const usersRouter = require('./routes/users.router');
-const adminRouter = require('./routes/admin.router');
 const { authJwt } = require('./middleware/jwt.handler');
 const { errorHandler } = require('./middleware/error.handler');
 const { hostname, port, mongodbConectionString } = config;
