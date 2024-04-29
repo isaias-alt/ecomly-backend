@@ -10,7 +10,6 @@ const errorHandler = async (error, req, res, next) => {
       return res.status(error.status).json({
         type: error.name,
         message: error.message,
-        code: error.status,
       });
     }
 
@@ -26,17 +25,13 @@ const errorHandler = async (error, req, res, next) => {
         return res.status(401).json({
           type: 'Unauthorized',
           message: 'Token does not exist.',
-          code: 401
         });
       }
 
       const userData = jwt.verify(token.refreshToken, refreshTokenSecret);
       const user = await User.findById(userData.id);
       if (!user) {
-        return res.status(404).json({
-          message: 'Invalid user!',
-          code: 404
-        });
+        return res.status(404).json({ message: 'Invalid user!' });
       }
 
       const newAccessToken = jwt.sign(
@@ -58,7 +53,6 @@ const errorHandler = async (error, req, res, next) => {
       return res.status(401).json({
         type: 'Unauthorized',
         message: refreshError.message,
-        code: 401
       });
     }
   }
@@ -66,7 +60,6 @@ const errorHandler = async (error, req, res, next) => {
   return res.status(400).json({
     type: error.name,
     message: error.message,
-    code: error.status,
   });
 }
 

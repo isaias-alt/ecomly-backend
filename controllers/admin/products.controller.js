@@ -19,6 +19,10 @@ const getProducts = async (req, res) => {
       .select('-reviews')
       .exec();
 
+    if (!products) {
+      return res.status(404).json({ message: 'Product not found!' })
+    }
+
     const productsCount = await Product.countDocuments();
 
     const totalPages = Math.ceil(productsCount / limit);
@@ -38,7 +42,6 @@ const getProducts = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -48,10 +51,7 @@ const getProductsCount = async (_, res) => {
     const productsCount = Product.countDocuments();
 
     if (!productsCount) {
-      return res.status(500).json({
-        message: 'Could not count Products.',
-        code: 500
-      });
+      return res.status(500).json({ message: 'Could not count Products.' });
     }
 
     return res.json({ productsCount });
@@ -60,7 +60,6 @@ const getProductsCount = async (_, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -80,32 +79,22 @@ const addProduct = async (req, res) => {
       return res.status(500).json({
         type: error.name,
         message: `${error.message}{${error.fields}}`,
-        storageErrors: error.storageErrors,
-        code: 500
+        storageErrors: error.storageErrors
       });
     }
 
     const category = await Category.findById(req.params.category);
     if (!category) {
-      return res.status(404).json({
-        message: 'Invalid category',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Invalid category' });
     }
 
     if (category.markedForDeletion) {
-      return res.status(404).json({
-        message: 'Category marked for deletion. You cannot add products to this category',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Category marked for deletion. You cannot add products to this category' });
     }
 
     const image = req.files['image'][0];
     if (!image) {
-      return res.status(404).json({
-        message: 'Not image found!',
-        code: 404,
-      });
+      return res.status(404).json({ message: 'Not image found!' });
     }
     req.body['image'] = `${req.protocol}://${req.get('host')}/${image.path}`;
 
@@ -124,25 +113,18 @@ const addProduct = async (req, res) => {
 
     const product = new Product(req.body).save();
     if (!product) {
-      return res.status(500).json({
-        message: 'The product could be not created',
-        code: 500
-      });
+      return res.status(500).json({ message: 'The product could be not created' });
     }
 
     return res.status(201).json(product);
 
   } catch (error) {
     if (error instanceof multer.MulterError) {
-      return res.status(error.code).json({
-        message: error.message,
-        code: error.code
-      });
+      return res.status(error.code).json({ message: error.message });
     }
     return res.status(500).json({
       type: error.name,
-      message: error.message,
-      code: 500
+      message: error.message
     });
   }
 }
@@ -153,25 +135,16 @@ const editProduct = async (req, res) => {
       !mongoose.isValidObjectId(req.params.id) ||
       !(await Product.findById(req.params.id))
     ) {
-      return res.status(404).json({
-        message: 'Invalid product',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Invalid product' });
     }
 
     if (req.body.category) {
       const category = await Category.findById(req.body.category);
       if (!category) {
-        return res.status(404).json({
-          message: 'invalid category',
-          code: 404
-        });
+        return res.status(404).json({ message: 'invalid category' });
       }
       if (category.markedForDeletion) {
-        return res.status(404).json({
-          message: 'Category marked for deletion. You cannot add products to this category',
-          code: 404
-        });
+        return res.status(404).json({ message: 'Category marked for deletion. You cannot add products to this category' });
       }
 
       const product = await Product.findById(req.params.id);
@@ -191,8 +164,7 @@ const editProduct = async (req, res) => {
           return res.status(500).json({
             type: error.name,
             message: `${error.message}{${error.fields}}`,
-            storageErrors: error.storageErrors,
-            code: 500
+            storageErrors: error.storageErrors
           });
         }
 
@@ -206,7 +178,6 @@ const editProduct = async (req, res) => {
           }
           req.body['images'] = [...product.images, ...imagePaths]
         }
-
       }
 
       if (req.body.image) {
@@ -224,16 +195,12 @@ const editProduct = async (req, res) => {
             type: error.name,
             message: `${error.message}{${error.fields}}`,
             storageErrors: error.storageErrors,
-            code: 500
           });
         }
 
         const image = req.files['image'][0];
         if (!image) {
-          return res.status(404).json({
-            message: 'Not image found!',
-            code: 404,
-          });
+          return res.status(404).json({ message: 'Not image found!' });
         }
 
         req.body['image'] = `${req.protocol}://${req.get('host')}/${image.path}`;
@@ -248,25 +215,18 @@ const editProduct = async (req, res) => {
     );
 
     if (!updatedProduct) {
-      return res.status(404).json({
-        message: 'The product not found!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'The product not found!' });
     }
 
     return res.json(updatedProduct);
 
   } catch (error) {
     if (error instanceof multer.MulterError) {
-      return res.status(error.code).json({
-        message: error.message,
-        code: error.code
-      });
+      return res.status(error.code).json({ message: error.message });
     }
     return res.status(500).json({
       type: error.name,
-      message: error.message,
-      code: 500
+      message: error.message
     });
   }
 }
@@ -276,19 +236,13 @@ const deleteProduct = async (req, res) => {
     const productId = req.params.id;
 
     if (!mongoose.isValidObjectId(productId)) {
-      return res.status(404).json({
-        message: 'Invalid product',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Invalid product' });
     }
 
     const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).json({
-        message: 'Product not found!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Product not found!' });
     }
 
     await mediaHelper.deleteImages([...product.images, ...product.image], 'ENOENT');
@@ -302,8 +256,7 @@ const deleteProduct = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: error.message,
-      code: 500
+      message: error.message
     });
   }
 }
@@ -314,20 +267,14 @@ const deleteProductImages = async (req, res) => {
     const { deletedImageUrls } = req.body;
 
     if (!mongoose.isValidObjectId(productId) || !Array.isArray(deletedImageUrls)) {
-      return res.status(400).json({
-        message: 'Invalid request data',
-        code: 400
-      });
+      return res.status(400).json({ message: 'Invalid request data' });
     }
 
     await mediaHelper.deleteImages(deletedImageUrls);
     const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).json({
-        message: 'Product not found!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Product not found!' });
     }
 
     product.images.filter((image) => !deletedImageUrls.includes(image));
@@ -337,15 +284,11 @@ const deleteProductImages = async (req, res) => {
 
   } catch (error) {
     if (error.code === 'ENOENT') {
-      return res.status(404).json({
-        message: 'Image not found',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Image not found' });
     }
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }

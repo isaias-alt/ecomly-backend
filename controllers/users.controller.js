@@ -7,7 +7,6 @@ const getUsers = async (_, res) => {
     if (!users) {
       return res.status(404).json({
         message: 'Users not found',
-        code: 404
       });
     }
     return res.json(users);
@@ -16,7 +15,6 @@ const getUsers = async (_, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500,
     });
   }
 }
@@ -28,10 +26,7 @@ const getUserById = async (req, res) => {
     );
 
     if (!user) {
-      return res.status(404).json({
-        message: 'User not found',
-        code: 404
-      });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     return res.json(user);
@@ -40,7 +35,6 @@ const getUserById = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500,
     });
   }
 }
@@ -56,10 +50,7 @@ const updateUser = async (req, res) => {
     );
 
     if (!user) {
-      return res.status(404).json({
-        message: 'User not found',
-        code: 404
-      });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     user.passwordHash = undefined;
@@ -71,7 +62,6 @@ const updateUser = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500,
     });
   }
 }

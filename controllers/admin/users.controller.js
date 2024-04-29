@@ -9,10 +9,7 @@ const getUsersCount = async (_, res) => {
     const userCount = User.countDocuments();
 
     if (!userCount) {
-      return res.status(500).json({
-        message: 'Could not count users.',
-        code: 500
-      });
+      return res.status(500).json({ message: 'Could not count users.' });
     }
 
     return res.json({ userCount });
@@ -21,7 +18,7 @@ const getUsersCount = async (_, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
+      code: error.code
     });
   }
 }
@@ -33,10 +30,7 @@ const deleteUser = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({
-        message: 'User not found!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'User not found!' });
     }
 
     const orders = await Order.find({ user: userId });
@@ -64,7 +58,7 @@ const deleteUser = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
+      code: error.code
     });
   }
 }

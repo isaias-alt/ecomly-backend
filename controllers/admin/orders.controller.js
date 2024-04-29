@@ -20,10 +20,7 @@ const getOrders = async (_, res) => {
       });
 
     if (!orders) {
-      return res.status(404).json({
-        message: 'Orders not found',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Orders not found' });
     }
 
     return res.json(orders);
@@ -32,7 +29,6 @@ const getOrders = async (_, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -42,10 +38,7 @@ const getOrdersCount = async (_, res) => {
     const ordersCount = Order.countDocuments();
 
     if (!ordersCount) {
-      return res.status(500).json({
-        message: 'Could not count users.',
-        code: 500
-      });
+      return res.status(500).json({ message: 'Could not count users.' });
     }
 
     return res.json({ ordersCount });
@@ -55,7 +48,6 @@ const getOrdersCount = async (_, res) => {
       type: error.name,
       message: `${error.message}{${error.fields}}`,
       storageErrors: error.storageErrors,
-      code: 500
     });
   }
 }
@@ -68,10 +60,7 @@ const changeOrderStatus = async (req, res) => {
     let order = await Order.findById(orderId);
 
     if (!order) {
-      return res.status(404).json({
-        message: 'Order not found!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Order not found!' });
     }
 
     if (!order.statusHistory.includes(order.status)) {
@@ -86,8 +75,7 @@ const changeOrderStatus = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: error.message,
-      code: 500
+      message: error.message
     });
   }
 }
@@ -96,10 +84,7 @@ const deleteOrder = async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
     if (!order) {
-      return res.status(404).json({
-        message: 'Order not found!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Order not found!' });
     }
 
     for (const orderItemId of order.orderItems) {
@@ -111,8 +96,7 @@ const deleteOrder = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: error.message,
-      code: 500
+      message: error.message
     });
   }
 }

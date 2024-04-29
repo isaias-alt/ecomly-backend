@@ -20,16 +20,12 @@ const addCategory = async (req, res) => {
         type: error.name,
         message: `${error.message}{${error.fields}}`,
         storageErrors: error.storageErrors,
-        code: 500
       });
     }
 
     const image = req.files['image'][0];
     if (!image) {
-      return res.status(404).json({
-        message: 'Not image found!',
-        code: 404,
-      });
+      return res.status(404).json({ message: 'Not image found!' });
     }
 
     req.body['image'] = `${req.protocol}://${req.get('host')}/${image.path}`;
@@ -38,24 +34,18 @@ const addCategory = async (req, res) => {
     category = category.save();
 
     if (!category) {
-      return res.status.json({
-        message: 'The category could not be created'
-      });
+      return res.status.json({ message: 'The category could not be created' });
     }
 
     return res.status(201).json({ category });
 
   } catch (error) {
     if (error instanceof multer.MulterError) {
-      return res.status(error.code).json({
-        message: error.message,
-        code: error.code
-      });
+      return res.status(error.code).json({ message: error.message });
     }
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -71,10 +61,7 @@ const editCategory = async (req, res) => {
     );
 
     if (!category) {
-      return res.status(404).json({
-        message: 'Category not found!',
-        code: 404
-      })
+      return res.status(404).json({ message: 'Category not found!' })
     }
 
     return res.json(category);
@@ -83,7 +70,6 @@ const editCategory = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -92,10 +78,7 @@ const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({
-        message: 'Category not found!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'Category not found!' });
     }
 
     category.markedForDeletion = true;
@@ -107,7 +90,6 @@ const deleteCategory = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }

@@ -15,10 +15,7 @@ const register = async (req, res) => {
       field: error.path,
       message: error.msg,
     }));
-    return res.status(400).json({
-      errors: errorMessages,
-      code: 400
-    });
+    return res.status(400).json({ errors: errorMessages });
   }
   try {
     let user = new User({
@@ -29,8 +26,7 @@ const register = async (req, res) => {
     if (!user) {
       res.status(500).json({
         type: 'Internal Server Error',
-        message: 'Could not create a new user.',
-        code: 500
+        message: 'Could not create a new user.'
       });
     }
     return res.status(201).json(user);
@@ -40,13 +36,11 @@ const register = async (req, res) => {
       return res.status(409).json({
         type: 'AuthError',
         message: 'User with that email alredy exists.',
-        code: 409
       });
     }
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -56,16 +50,10 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(404).json({
-        message: 'User not found. Check your email and try again.',
-        code: 404
-      });
+      return res.status(404).json({ message: 'User not found. Check your email and try again.' });
     }
     if (!bcrypt.compareSync(password, user.passwordHash)) {
-      return res.status(400).json({
-        message: 'Incorrect Password!',
-        code: 400
-      });
+      return res.status(400).json({ message: 'Incorrect Password!' });
     }
     const accessToken = jwt.sign(
       { id: user.id, isAdmin: user.isAdmin },
@@ -89,7 +77,6 @@ const login = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -116,7 +103,6 @@ const verifyToken = async (req, res) => {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
@@ -126,10 +112,7 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
-        message: 'User with that email does NOT exists!',
-        code: 404
-      });
+      return res.status(404).json({ message: 'User with that email does NOT exists!' });
     }
     const otp = Math.floor(1000 + Math.random() * 9000);
     user.resetPasswordOtp = otp;
@@ -138,16 +121,15 @@ const forgotPassword = async (req, res) => {
 
     const response = await mailSender.sendMail(
       email,
-      'Password reset OTP.',
-      `Your OTP for password reset is ${otp}.`
+      'Password reset One-Time Password.',
+      `Your One-Time Password for password reset is ${otp}.`
     );
     return res.json({ message: response });
 
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: error.message,
-      code: 500
+      message: error.message
     });
   }
 }
@@ -158,37 +140,24 @@ const verifyPasswordResetOTP = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
-        message: 'User not found!',
-        code: 404,
-      });
+      return res.status(404).json({ message: 'User not found!' });
     }
     if (user.resetPasswordOtp !== +otp) {
-      return res.status(401).json({
-        message: 'Invalid OTP.',
-        code: 401
-      });
+      return res.status(401).json({ message: 'Invalid One-Time Password.' });
     }
     if (Date.now() > user.resetPasswordOtpExpired) {
-      return res.status(401).json({
-        message: 'Expired OTP.',
-        code: 401
-      });
+      return res.status(401).json({ message: 'Expired One-Time Password.' });
     }
 
     user.resetPasswordOtp = 1;
     user.resetPasswordOtpExpired = undefined;
     user.save();
-    return res.status(200).json({
-      message: 'OTP confirmed successfully.',
-      code: 200
-    });
+    return res.status(200).json({ message: 'One-Time Password confirmed successfully.' });
 
   } catch (error) {
     return res.status(500).json({
       type: error.name,
-      message: error.message,
-      code: 500
+      message: error.message
     });
   }
 }
@@ -200,50 +169,30 @@ const resetPassword = async (req, res) => {
       field: error.path,
       message: error.msg,
     }));
-    return res.status(400).json({
-      errors: errorMessages,
-      code: 400
-    });
+    return res.status(400).json({ errors: errorMessages });
   }
   try {
     const { email, newPassword } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
-        message: 'User not found!',
-        code: 404,
-      });
+      return res.status(404).json({ message: 'User not found!' });
     }
     if (user.resetPasswordOtp !== 1) {
-      return res.status(401).json({
-        message: 'Confirm OTP before resetting the password.',
-        code: 401
-      })
+      return res.status(401).json({ message: 'Confirm One-Time Password before resetting the password.' })
     }
 
     user.passwordHash = bcrypt.hashSync(newPassword, 8);
     user.resetPasswordOtp = undefined;
     await user.save();
-    return res.status(200).json({
-      message: 'Password reset successfully.',
-      code: 200
-    });
+    return res.status(200).json({ message: 'Password reset successfully.' });
 
   } catch (error) {
     return res.status(500).json({
       type: error.name,
       message: error.message,
-      code: 500
     });
   }
 }
 
-module.exports = {
-  register,
-  login,
-  forgotPassword,
-  verifyPasswordResetOTP,
-  resetPassword,
-  verifyToken
-};
+module.exports = { register, login, forgotPassword, verifyPasswordResetOTP, resetPassword, verifyToken };
